@@ -34,7 +34,7 @@ double polygonPerimeter(const std::vector<Point>& polygon) {
 }
 
 int main() {
-    std::vector<Point> polygon = {{0.0, 0.0}, {2.0, 00}, {2.0, 1.0}, {1.0, 1.0}, {1.0, 2.0}, {0.0, 2.0}};
+    std::vector<Point> polygon = {{0.0, 0.0}, {6.0, 0.0}, {6.0, 2.0}, {4.0, 2.0}, {4.0, 4.0}, {1.0, 4.0}, {1.0, 3.0}, {0.0, 3.0}};
     double perimeter = polygonPerimeter(polygon);
     std::cout << "The perimeter of the polygon is " << perimeter << std::endl;
     double area = polygonArea(polygon);
