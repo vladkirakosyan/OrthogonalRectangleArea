@@ -1,43 +1,52 @@
-#include <iostream>
+#include "Polygon.h"
 #include <cmath>
-#include <vector>
 
-struct Point {
-    double x, y;
-};
-
-double distance(const Point& p1, const Point& p2) {
-    double dx = p1.x - p2.x;
-    double dy = p1.y - p2.y;
-    return sqrt(dx*dx + dy*dy);
+void Polygon::addVertex(double x, double y) {
+    xCoordinates.push_back(x);
+    yCoordinates.push_back(y);
 }
 
-double polygonArea(const std::vector<Point>& polygon) {
+double Polygon::calculateArea() const {
     double area = 0.0;
-    int n = polygon.size();
-    for (int i = 0; i < n; i++) {
+    int n = xCoordinates.size();
+    for (int i = 0; i < n; ++i) {
         int j = (i + 1) % n;
-        area += polygon[i].x * polygon[j].y;
-        area -= polygon[j].x * polygon[i].y;
+        area += xCoordinates[i] * yCoordinates[j];
+        area -= xCoordinates[j] * yCoordinates[i];
     }
-    return 0.5 * abs(area);
+    return 0.5 * std::abs(area);
 }
 
-double polygonPerimeter(const std::vector<Point>& polygon) {
+bool Polygon::isOrthogonalRectangle() const {
+   size_t n = xCoordinates.size();
+    if (n < 4) {
+        return false;
+    }
+
+    double xDiff = std::abs(xCoordinates[1] - xCoordinates[0]);
+    double yDiff = std::abs(yCoordinates[1] - yCoordinates[0]);
+    bool isOrthogonal = (xDiff == 0 && yDiff != 0) || (xDiff != 0 && yDiff == 0);
+    if (!isOrthogonal) return false;
+
+    for (size_t i = 2; i < n; ++i) {
+        double currentXDiff = std::abs(xCoordinates[i] - xCoordinates[i - 1]);
+        double currentYDiff = std::abs(yCoordinates[i] - yCoordinates[i - 1]);
+        isOrthogonal = (currentXDiff == 0 && currentYDiff != 0) || (currentXDiff != 0 && currentYDiff == 0);
+        if (!isOrthogonal) {
+            return false;
+        }
+    }
+    return true;
+}
+
+double Polygon::calculatePerimeter() const {
     double perimeter = 0.0;
-    int n = polygon.size();
-    for (int i = 0; i < n; i++) {
+    int n = xCoordinates.size();
+    for (int i = 0; i < n; ++i) {
         int j = (i + 1) % n;
-        perimeter += distance(polygon[i], polygon[j]);
+        double dx = xCoordinates[j] - xCoordinates[i];
+        double dy = yCoordinates[j] - yCoordinates[i];
+        perimeter += std::sqrt(dx * dx + dy * dy);
     }
     return perimeter;
-}
-
-int main() {
-    std::vector<Point> polygon = {{0.0, 0.0}, {6.0, 0.0}, {6.0, 2.0}, {4.0, 2.0}, {4.0, 4.0}, {1.0, 4.0}, {1.0, 3.0}, {0.0, 3.0}};
-    double perimeter = polygonPerimeter(polygon);
-    std::cout << "The perimeter of the polygon is " << perimeter << std::endl;
-    double area = polygonArea(polygon);
-    std::cout << "The area of the polygon is " << area << std::endl;
-    return 0;
 }
